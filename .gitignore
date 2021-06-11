@@ -1,0 +1,4 @@
+app/*
+db/data/*
+*.code-workspace
+.DS_Store

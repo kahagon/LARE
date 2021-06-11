@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - web
+    environment:
+      DOMAINS: "${APP_DOMAIN} -> http://web"
+      STAGE: "${APP_ENV}"
+#      FORCE_RENEW: 'true'
+    restart: always
+
+  web:
+    container_name: web
+    build:
+      context: ./dockerfiles
+      dockerfile: Dockerfile-php7
+    volumes:
+      - ../:/var/www/app
+    depends_on:
+      - db
+    links:
+      - db
+    restart: always
+
+  db:
+    container_name: db
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./logs/db:/var/log/mysql
+    restart: always

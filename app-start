@@ -1,0 +1,3 @@
+#!/bin/bash
+php ./scripts/check-env.php && \
+docker-compose --env-file=../.env up -d

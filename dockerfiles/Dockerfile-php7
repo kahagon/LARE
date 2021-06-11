@@ -1,0 +1,66 @@
+FROM php:7.2-apache
+
+ENV WORK_DIR_PATH=/root/tmp
+ARG BINDIR_PATH=/usr/local/bin
+ARG INSTALL_COMPOSER=install-composer.sh
+ARG PHP_INI_SRC=php.ini-7.2-production
+ARG PHP_INI_DEST=/usr/local/etc/php/php.ini
+ARG SITE_CONF_NAME=laravel-app.conf
+ARG SITE_CONF_SRC=laravel-app.conf
+ARG SITE_CONF_DEST=/etc/apache2/sites-available/laravel-app.conf
+
+RUN apt-get update && \
+	apt-get install -y \
+                libfreetype6-dev \
+                libjpeg62-turbo-dev \
+                libjpeg-dev \
+                libpng-dev \
+		npm \
+		vim \
+		tree \
+		zlib1g-dev \
+		libxml2-dev
+
+RUN docker-php-ext-install \
+		bcmath \
+		ctype \
+		fileinfo \
+		gd \
+		json \
+		mbstring \
+		pdo \
+		pdo_mysql \
+		tokenizer \
+		xml \
+		zip
+
+COPY $PHP_INI_SRC $PHP_INI_DEST 
+RUN sed -i -e 's/;date.timezone =/date.timezone = Asia\/Tokyo/' $PHP_INI_DEST
+RUN sed -i -e 's/post_max_size = 8M/post_max_size = 100M/' $PHP_INI_DEST
+RUN sed -i -e 's/upload_max_filesize = 2M/upload_max_filesize = 100M/' $PHP_INI_DEST
+RUN sed -i -e 's/;mbstring.language = Japanese/mbstring.language = Japanese/' $PHP_INI_DEST
+RUN sed -i -e 's/;mbstring.internal_encoding = EUC-JP/mbstring.internal_encoding = UTF-8/' $PHP_INI_DEST
+RUN sed -i -e 's/;mbstring.http_input = auto/mbstring.http_input = pass/' $PHP_INI_DEST
+RUN sed -i -e 's/;mbstring.http_output = SJIS/mbstring.http_output = pass/' $PHP_INI_DEST
+RUN sed -i -e 's/;mbstring.encoding_translation = Off/mbstring.encoding_translation = Off/' $PHP_INI_DEST
+RUN sed -i -e 's/pdo_mysql.default_socket=/pdo_mysql.default_socket = \/var\/lib\/mysql\/mysql.sock/' $PHP_INI_DEST
+RUN sed -i -e 's/mysql.default_socket =/mysql.default_socket = \/var\/lib\/mysql\/mysql.sock/' $PHP_INI_DEST
+RUN sed -i -e 's/mysqli.default_socket =/mysqli.default_socket = \/var\/lib\/mysql\/mysql.sock/' $PHP_INI_DEST
+
+RUN a2enmod rewrite 
+RUN a2enmod ssl 
+
+COPY $SITE_CONF_SRC $SITE_CONF_DEST 
+RUN a2ensite $SITE_CONF_NAME
+RUN a2dissite 000-default.conf
+
+WORKDIR $WORK_DIR_PATH 
+
+COPY $INSTALL_COMPOSER $WORK_DIR_PATH/
+
+RUN ./$INSTALL_COMPOSER
+
+RUN mv composer.phar $BINDIR_PATH/composer
+
+RUN composer global require "laravel/installer"
+
