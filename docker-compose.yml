@@ -2,6 +2,7 @@ version: '3'
 services:
 
   https-portal:
+    container_name: ${CONTAINER_SSL:-lare_ssl}
     image: steveltn/https-portal:1
     ports:
       - '80:80'
@@ -15,7 +16,7 @@ services:
     restart: always
 
   web:
-    container_name: web
+    container_name: ${CONTAINER_WEB:-lare_web}
     build:
       context: ./dockerfiles
       dockerfile: Dockerfile-php7
@@ -28,7 +29,7 @@ services:
     restart: always
 
   db:
-    container_name: db
+    container_name: ${CONTAINER_DB:-lare_db}
     image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
