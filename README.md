@@ -24,6 +24,13 @@ CentOS7
         `root` は指定不可
     * `DB_PASSWORD`  
         上記 `DB_USERNAME` に対するパスワード
+    * 以下の環境変数は必須ではないものの定義されている方が望ましい
+        * `CONTAINER_SSL`  
+            SSLサーバー用コンテナの名称
+        * `CONTAINER_WEB`  
+            WEBサーバー用コンテナの名称
+        * `CONTAINER_DB`  
+            DBサーバー用コンテナの名称
 1. install-centos7 を実行
 
 アプリはインストール後に稼働状態になる。
