@@ -22,7 +22,7 @@ CentOS7
         アプリの使用する DB 名称。この名前の DB が作成される
     * `DB_USERNAME`  
         `root` は指定不可
-    * `DB_PASSWORD`
+    * `DB_PASSWORD`  
         上記 `DB_USERNAME` に対するパスワード
 1. install-centos7 を実行
 
