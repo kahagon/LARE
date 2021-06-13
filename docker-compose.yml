@@ -5,8 +5,8 @@ services:
     container_name: ${CONTAINER_SSL:-lare_ssl}
     image: steveltn/https-portal:1
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
     links:
       - web
     environment:
@@ -37,9 +37,17 @@ services:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_PASSWORD=${DB_PASSWORD}
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-3306}:3306"
     volumes:
       - ./db/data:/var/lib/mysql
       - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./logs/db:/var/log/mysql
     restart: always
+
+  pma:
+    container_name: ${CONTAINER_PMA:-lare_pma}
+    image: phpmyadmin/phpmyadmin:4.5.3.1-1
+    ports:
+        - "8080:8080"
+    links:
+        - db:db
