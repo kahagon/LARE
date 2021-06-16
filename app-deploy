@@ -1,6 +1,11 @@
 #!/bin/bash
 
 ./app-start && \
-docker container exec web php -r 'echo `cd /var/www/app && chown -R www-data:www-data .`;' && \
-docker container exec web php -r 'echo `cd /var/www/app && rm -rf node_modules && npm cache clear --force && npm install && npm run prod `;' && \
-docker container exec web php -r 'echo `cd /var/www/app && composer clear-cache && composer install --no-dev  && php artisan migrate`;'
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && chown -R www-data:www-data .`;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && rm -rf node_modules && npm cache clear --force && npm install && npm run prod `;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && composer clear-cache && composer install --no-dev && composer dump-autoload`;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && php artisan migrate --force`;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && php artisan cache:clear`;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && php artisan config:clear`;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && php artisan route:clear`;' && \
+docker container exec `php ./scripts/get-env.php CONTAINER_WEB web` php -r 'echo `cd /var/www/app && php artisan view:clear`;'
