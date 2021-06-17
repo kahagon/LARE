@@ -7,6 +7,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    logging:
+      driver: "${LOGGING_DRIVER:-json-file}"
+      options:
+        max-size: "${LOGGING_MAX_SIZE:-10M}"
+        max-file: "${LOGGING_MAX_FILE:-10}"
     volumes:
       - ./certs:/var/lib/https-portal
     links:
@@ -22,6 +27,11 @@ services:
     build:
       context: ./dockerfiles
       dockerfile: Dockerfile-php7
+    logging:
+      driver: "${LOGGING_DRIVER:-json-file}"
+      options:
+        max-size: "${LOGGING_MAX_SIZE:-10M}"
+        max-file: "${LOGGING_MAX_FILE:-10}"
     volumes:
       - ../:/var/www/app
     depends_on:
@@ -40,6 +50,11 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
     ports:
       - "${DB_PORT:-3306}:3306"
+    logging:
+      driver: "${LOGGING_DRIVER:-json-file}"
+      options:
+        max-size: "${LOGGING_MAX_SIZE:-10M}"
+        max-file: "${LOGGING_MAX_FILE:-10}"
     volumes:
       - ./db/data:/var/lib/mysql
       - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
