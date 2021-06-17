@@ -9,6 +9,7 @@ sudo chmod +x /usr/local/bin/docker-compose && \
 systemctl enable firewalld && systemctl start firewalld && \
 firewall-cmd --zone=public --add-service=http --permanent && \
 firewall-cmd --zone=public --add-service=https --permanent && \
+firewall-cmd --zone=public --add-port=34567/tcp --permanent && \
 firewall-cmd --reload && \
 systemctl enable docker && systemctl start docker && \
 ./app-install
