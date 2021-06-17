@@ -12,4 +12,5 @@ firewall-cmd --zone=public --add-service=https --permanent && \
 firewall-cmd --zone=public --add-port=34567/tcp --permanent && \
 firewall-cmd --reload && \
 systemctl enable docker && systemctl start docker && \
+php ./scripts/install-db-backup-schedule.php && \
 ./app-install
