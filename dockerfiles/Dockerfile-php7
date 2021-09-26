@@ -22,6 +22,7 @@ RUN apt-get update && \
 		libxml2-dev
 
 RUN docker-php-ext-install \
+		mysqli \
 		bcmath \
 		ctype \
 		fileinfo \
