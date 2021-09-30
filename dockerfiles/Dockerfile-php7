@@ -19,7 +19,8 @@ RUN apt-get update && \
 		vim \
 		tree \
 		zlib1g-dev \
-		libxml2-dev
+		libxml2-dev \
+		tzdata
 
 RUN docker-php-ext-install \
 		mysqli \
@@ -34,6 +35,8 @@ RUN docker-php-ext-install \
 		tokenizer \
 		xml \
 		zip
+
+RUN cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
 COPY $PHP_INI_SRC $PHP_INI_DEST 
 RUN sed -i -e 's/;date.timezone =/date.timezone = Asia\/Tokyo/' $PHP_INI_DEST
